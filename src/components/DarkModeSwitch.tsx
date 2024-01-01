@@ -1,10 +1,13 @@
 import React from 'react';
+import {MdLightMode} from "react-icons/md";
+import {BsFillMoonFill} from "react-icons/bs";
 
 const DarkModeSwitch = () => {
     return (
-        <div>
-
-        </div>
+        <>
+            <MdLightMode/>
+            <BsFillMoonFill/>
+        </>
     );
 };
 
