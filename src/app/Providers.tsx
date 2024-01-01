@@ -7,7 +7,7 @@ import {ThemeProvider} from "next-themes";
 // @ts-ignore
 const Providers = ({children}) => {
     return (
-        <ThemeProvider >
+        <ThemeProvider enableSystem={true} attribute="class" >
             {children}
         </ThemeProvider>
     );
