@@ -12,9 +12,8 @@ const DarkModeSwitch = () => {
     return (
 
         <>
-            {currentTheme === "dark" ? (<MdLightMode/>) : (<BsFillMoonFill/>)}
-
-
+            {currentTheme === "dark" ? (<MdLightMode onClick={() => setTheme("light")}/>) : (
+                <BsFillMoonFill onClick={() => setTheme("dark")}/>)}
         </>
     );
 };
