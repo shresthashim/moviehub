@@ -1,4 +1,5 @@
 import React from 'react';
+import Card from "@/components/Card";
 
 interface Result {
     id: number;
@@ -13,12 +14,10 @@ const Results: React.FC<ResultsProps> = ({results}) => {
     return (
         <div>
             {results.map((result: Result) => (
-                <div key={result.id}>
-                    {result.original_title}
+                <Card key={result.id} result={result}/>
+                    ))}
                 </div>
-            ))}
-        </div>
-    );
-};
+            );
+            };
 
-export default Results;
+            export default Results;
