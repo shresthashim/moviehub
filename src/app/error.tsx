@@ -15,13 +15,13 @@ export default function Error({
     }, [error])
 
     return (
-        <div>
+        <div className='text-center mt-10'>
             <h2>Something went wrong!</h2>
-            <button
-                onClick={
-                    // Attempt to recover by trying to re-render the segment
-                    () => reset()
-                }
+            <button className='hover:text-amber:600'
+                    onClick={
+                        // Attempt to recover by trying to re-render the segment
+                        () => reset()
+                    }
             >
                 Try again
             </button>
