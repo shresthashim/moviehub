@@ -26,8 +26,8 @@ const Card = ({result}) => {
                 <div className='p-2'>
                     <p className='line-clamp-3 text-md'>{result.overview}</p>
                     <h2 className='truncate text-lg font-bold'>{result.title || result.name}</h2>
-                    <p>{result.release_date || result.first_air_date}</p>
-                    <FiThumbsUp/>{result.vote_count}
+                    <p className='flex items-center'>{result.release_date || result.first_air_date}
+                        <FiThumbsUp className='h-5 mr-1 ml-3'/>{result.vote_count}</p>
 
                 </div>
 
