@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from "next/link";
 import Image from "next/image";
+import {FiThumbsUp} from "react-icons/fi";
 // @ts-ignore
 const Card = ({result}) => {
     return (
@@ -23,8 +24,13 @@ const Card = ({result}) => {
                 </Image>
 
                 <div className='p-2'>
-                    <p className='line-clamp-4'>{result.overview}</p>
+                    <p className='line-clamp-3 text-md'>{result.overview}</p>
+                    <h2 className='truncate text-lg font-bold'>{result.title || result.name}</h2>
+                    <p>{result.release_date || result.first_air_date}</p>
+                    <FiThumbsUp/>{result.vote_count}
+
                 </div>
+
             </Link>
         </div>
     );
