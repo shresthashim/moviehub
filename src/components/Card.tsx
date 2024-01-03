@@ -22,7 +22,9 @@ const Card = ({result}) => {
 
                 </Image>
 
-
+                <div className='p-2'>
+                    <p className='truncate'>{result.overview}</p>
+                </div>
             </Link>
         </div>
     );
