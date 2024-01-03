@@ -23,7 +23,7 @@ const Card = ({result}) => {
                 </Image>
 
                 <div className='p-2'>
-                    <p className='truncate'>{result.overview}</p>
+                    <p className='line-clamp-4'>{result.overview}</p>
                 </div>
             </Link>
         </div>
