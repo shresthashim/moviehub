@@ -11,7 +11,7 @@ const SearchBox = () => {
     // @ts-ignore
     const handleSubmit = (e) => {
         e.preventDefault()
-        if (!input){
+        if (!input) {
             return
         }
         router.push(`/search/${input}`)
@@ -22,7 +22,7 @@ const SearchBox = () => {
             <input onChange={(e) => setInput(e.target.value)} type="text" placeholder='Search for a movie...'
                    className='w-full h-14 rounded-sm placeholder-gray-500 outline-none bg-transparent flex-1'
                    value={input}/>
-            <button type='submit' className='text-amber-600 disabled:text-red-400'>Search</button>
+            <button disabled={!input} type='submit' className='text-amber-600 disabled:text-red-400'>Search</button>
 
 
         </form>
