@@ -1,4 +1,5 @@
 import React from 'react';
+import Results from "@/components/Results";
 
 // @ts-ignore
 const SearchPage = async ({params}) => {
@@ -17,7 +18,9 @@ const SearchPage = async ({params}) => {
 
     return (
         <div>
-            haha
+            {results && results.length === 0 && <h1 className='text-2xl text-center pt-6'>No results found</h1>}
+
+            {results && <Results results={results} />}
         </div>
     );
 };
