@@ -3,7 +3,7 @@ import React from 'react';
 const SearchPage = () => {
     return (
         <div>
-            searchpage
+            haha
         </div>
     );
 };
