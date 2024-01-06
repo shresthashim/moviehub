@@ -17,7 +17,7 @@ const API_KEY = process.env.API_KEY;
 
 const ReviewPage: React.FC<ReviewPageProps> = async ({params}) => {
     const movieId = params.id;
-    const res = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=${API_KEY}&language=en-US&page=1`);
+    const res = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=${API_KEY}&language=en-US`);
     const review = await res.json();
     console.log(review);
 
