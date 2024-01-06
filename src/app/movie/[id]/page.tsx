@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import React from "react";
+import Link from "next/link";
 
 // @ts-ignore
 export default async function MoviePage({params}) {
@@ -37,6 +38,17 @@ export default async function MoviePage({params}) {
 
             </div>
 
+
         </div>
-    </div>;
+        <div className='flex flex-col md:flex-row items-center content-center max-w-6xl mx-auto md:space-x-6'>
+            <Link href={`/movie/${movieId}/review`}>
+                <button className='bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-lg my-2'>Check
+                    reviews
+                </button>
+            </Link>
+        </div>
+
+
+    </div>
+        ;
 }
