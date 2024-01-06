@@ -34,7 +34,11 @@ const ReviewPage: React.FC<ReviewPageProps> = async ({params}) => {
                         </p>
                         <p className="text-sm">
                             <span className="font-semibold mr-1">Date:</span>
-                            {result.created_at}
+                            {new Date(result.created_at).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit'
+                            })}
                         </p>
                     </div>
                 ))}
