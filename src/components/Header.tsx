@@ -9,6 +9,7 @@ const Header = () => {
         <div className="flex">
             <MenuItem title="HOME" address="/" Icon={AiFillHome}/>
             <MenuItem title="ABOUT" address="/about" Icon={BsFillInfoCircleFill}/>
+            <MenuItem title="FAQs" address="/faq" Icon={BsFillInfoCircleFill}/>
         </div>
         <div className="flex items-center space-x-5">
             <DarkModeSwitch/>
