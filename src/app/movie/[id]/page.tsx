@@ -2,7 +2,7 @@
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
-import {FiCalendar, FiStar, FiTrendingUp, FiClock, FiCheckCircle} from 'react-icons/fi';
+import {FiCalendar, FiStar, FiTrendingUp, FiClock, FiCheckCircle, FiDollarSign} from 'react-icons/fi';
 
 // @ts-ignore
 export default async function MoviePage({params}) {
@@ -15,40 +15,55 @@ export default async function MoviePage({params}) {
 
             <div
                 className='py-4 md:pt-8 flex flex-col md:flex-row items-center content-center max-w-6xl mx-auto md:space-x-6'>
-                <Image alt="Image"
-                       src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path || movie.poster_path}`}
-                       width={500} height={300}
+                <Image alt="The Godfather Poster"
+                       src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
+                       width={300} height={450}
                        style={{
                            maxWidth: '100%',
                            height: '100%',
                        }}
-                       className='rounded-lg'
+                       className='rounded-lg shadow-md'
                        placeholder='blur'
                        blurDataURL='/spinner.svg'
                 />
                 <div className='p-2 flex flex-col'>
-                    <h2 className='text-lg mb-3 font-bold'>{movie.title || movie.name}</h2>
+                    <h2 className='text-2xl md:text-3xl mb-3 font-bold'>{movie.title || movie.name}</h2>
 
-                    <p className='text-lg mb-3'><span className='font-semibold mr-1'>Overview :</span>{movie.overview}
-                    </p>
-                    <p className='mb-3 flex items-center'>
+                    <p className='text-lg mb-3'>{movie.tagline}</p>
+                    <p className='text-lg mb-3'>{movie.overview}</p>
+
+                    <div className='mb-3 flex items-center'>
                         <span className='font-semibold mr-2'><FiCalendar/></span>
                         <span className='font-semibold'>Release Date :</span>{' '}
-                        {movie.release_date || movie.first_air_date}
-                    </p>
-                    <p className='mb-3 flex items-center'><span className='font-semibold mr-1'><FiStar/></span>
-                        {movie.vote_count}
-                    </p>
-                    <p className='mb-3 flex items-center'><span className='font-semibold mr-1'><FiTrendingUp/></span>
-                        {movie.popularity}
-                    </p>
-                    <p className='mb-3 flex items-center'><span className='font-semibold mr-1'><FiClock/></span>
-                        {movie.runtime} minutes
-                    </p>
-                    <p className='mb-3 flex items-center'><span className='font-semibold mr-1'><FiCheckCircle/></span>
-                        {movie.status === 'Released' ? <span className="text-green-500">Released</span> :
-                            <span className="text-red-500">{movie.status}</span>}
-                    </p>
+                        {new Date(movie.release_date).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })}
+                    </div>
+                    <div className='mb-3 flex items-center'>
+                        <span className='font-semibold mr-2'><FiStar/></span>
+                        <span className='font-semibold'>Rating :</span> {movie.vote_average} / 10
+                        ({movie.vote_count} votes)
+                    </div>
+                    <div className='mb-3 flex items-center'>
+                        <span className='font-semibold mr-2'><FiTrendingUp/></span>
+                        <span className='font-semibold'>Popularity :</span> {movie.popularity}
+                    </div>
+                    <div className='mb-3 flex items-center'>
+                        <span className='font-semibold mr-2'><FiDollarSign/></span>
+                        <span className='font-semibold'>Revenue :</span> ${movie.revenue.toLocaleString()}
+                    </div>
+                    <div className='mb-3 flex items-center'>
+                        <span className='font-semibold mr-2'><FiClock/></span>
+                        <span className='font-semibold'>Runtime :</span> {movie.runtime} minutes
+                    </div>
+                    <div className='mb-3 flex items-center'>
+                        <span className='font-semibold mr-2'><FiCheckCircle/></span>
+                        <span className='font-semibold'>Status :</span> {movie.status === 'Released' ?
+                        <span className="text-green-500">Released</span> :
+                        <span className="text-red-500">{movie.status}</span>}
+                    </div>
                 </div>
             </div>
 
