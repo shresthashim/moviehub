@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {FiChevronDown, FiChevronUp} from 'react-icons/fi';
 
 const FAQAccordion = () => {
-    const faqs = [
+    const faqs: { question: string; answer: string }[] = [
         {
             question: 'What is the MovieHub',
             answer: 'MovieHub is a movie website where the trending, top rated and currently aired movies are shown.',
@@ -24,16 +24,16 @@ const FAQAccordion = () => {
 
     ];
 
-    const [activeIndex, setActiveIndex] = useState(null);
+    const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-    const toggleAccordion = (index) => {
+    const toggleAccordion = (index: number) => {
         setActiveIndex(activeIndex === index ? null : index);
     };
 
     return (
         <div className="container mx-auto mt-8">
             <h2 className="text-3xl mb-6 font-bold text-center">Frequently Asked Questions</h2>
-            {faqs.map((faq, index) => (
+            {faqs.map((faq, index: number) => (
                 <div
                     key={index}
                     className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-4 cursor-pointer"
