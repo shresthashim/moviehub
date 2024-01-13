@@ -37,6 +37,7 @@ export default async function MoviePage({params}) {
                 className='font-semibold mr-1'>Rating :</span>{movie.vote_count}</p>
                 <p className='mb-3'><span
                     className='font-semibold mr-1'>Popularity :</span>{movie.popularity}</p>
+                <p className='mb-3'><span className='font-semibold mr-1'>Runtime :</span>{movie.runtime} minutes </p>
 
             </div>
 
