@@ -15,7 +15,7 @@ export default async function MoviePage({params}) {
 
             <div
                 className='py-4 md:pt-8 flex flex-col md:flex-row items-center content-center max-w-6xl mx-auto md:space-x-6'>
-                <Image alt="The Godfather Poster"
+                <Image alt="Movie Poster"
                        src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
                        width={300} height={450}
                        style={{
@@ -69,7 +69,7 @@ export default async function MoviePage({params}) {
 
             <div className='flex flex-col md:flex-row items-center content-center max-w-6xl mx-auto md:space-x-6'>
                 <Link href={`/movie/${movieId}/review`}>
-                    <button className='bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-lg my-2'>
+                    <button className='bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg my-2'>
                         Check Reviews
                     </button>
                 </Link>
