@@ -4,7 +4,7 @@ export default function About() {
         <div className="max-w-6xl mx-auto space-y-4 p-4 text-center">
             <h1 className="text-4xl font-bold text-amber-600">Welcome to Our Movie World</h1>
             <p className="text-lg">
-                Embark on a cinematic journey with us! We're a dedicated team of movie
+                Embark on a cinematic journey with us! We&apos;re a dedicated team of movie
                 enthusiasts, committed to bringing you the best in the world of cinema.
             </p>
 
@@ -30,7 +30,7 @@ export default function About() {
 
             <p className="text-lg">
                 Thank you for being a part of our journey. Explore, connect, and enjoy
-                the world of cinema. If you have any feedback or suggestions, we're
+                the world of cinema. If you have any feedback or suggestions, we&apos;re
                 eager to hear from you. Happy browsing!
             </p>
 
