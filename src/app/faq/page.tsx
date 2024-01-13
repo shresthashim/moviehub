@@ -1,52 +1,53 @@
-
-'use client'
+'use client';
 import React, {useState} from 'react';
 import {FiChevronDown, FiChevronUp} from 'react-icons/fi';
 
-// Define the FAQAccordionDark component
-const FAQAccordionDark = () => {
-    // Define the FAQs
+const FAQAccordion = () => {
     const faqs = [
         {
-            question: 'What is the purpose of this website?',
-            answer: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            question: 'What is the MovieHub',
+            answer: 'MovieHub is a movie website where the trending, top rated and currently aired movies are shown.',
         },
         {
             question: 'How can I search for movies?',
-            answer: 'Nulla facilisi. Sed sit amet gravida libero, ut suscipit urna.',
+            answer: 'You can search for movies by clicking on the search icon in the navbar and typing in the search bar.',
+        }, {
+            question: 'From where the datas are fetched?',
+            answer: 'The movies data are fetched from TMDB (The MovieDataBase) API.',
+        }, {
+            question: 'What kind of details can we see from this movie website?',
+            answer: 'You can see the details of the movie like the overview, release date, vote count, vote average, genres, etc.',
+        }, {
+            question: 'Can we see the reviews of the movies?',
+            answer: 'Yes, you can see the reviews of the movies by clicking on the reviews button in the movie details page.',
         },
-        // Add more FAQs as needed
+
     ];
 
-    // Set up state to track active index
     const [activeIndex, setActiveIndex] = useState(null);
 
-    // Function to toggle accordion
     const toggleAccordion = (index) => {
         setActiveIndex(activeIndex === index ? null : index);
     };
 
-    // Render the FAQAccordionDark component
     return (
         <div className="container mx-auto mt-8">
-            <h2 className="text-3xl mb-6 font-bold text-center text-white">Frequently Asked Questions</h2>
+            <h2 className="text-3xl mb-6 font-bold text-center">Frequently Asked Questions</h2>
             {faqs.map((faq, index) => (
                 <div
                     key={index}
-                    className="bg-gray-800 p-6 rounded-lg shadow-md mb-4 cursor-pointer"
+                    className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-4 cursor-pointer"
                     onClick={() => toggleAccordion(index)}
                 >
                     <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold text-white">{faq.question}</h3>
-                        {activeIndex === index ? <FiChevronUp className="text-white"/> :
-                            <FiChevronDown className="text-white"/>}
+                        <h3 className="text-lg font-semibold">{faq.question}</h3>
+                        {activeIndex === index ? <FiChevronUp/> : <FiChevronDown/>}
                     </div>
-                    {activeIndex === index && <p className="mt-4 text-white">{faq.answer}</p>}
+                    {activeIndex === index && <p className="mt-4">{faq.answer}</p>}
                 </div>
             ))}
         </div>
     );
 };
 
-// Export the FAQAccordionDark component
-export default FAQAccordionDark;
+export default FAQAccordion;
