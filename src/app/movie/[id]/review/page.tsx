@@ -5,7 +5,7 @@ interface Review {
     id: number;
     author: string;
     content: string;
-    created_at: string; // Change the type to the actual type of 'created_at'
+    created_at: string;
 }
 
 interface ReviewPageProps {
