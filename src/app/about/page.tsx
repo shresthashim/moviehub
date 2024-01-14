@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 export default function About() {
     return (
         <div className="max-w-6xl mx-auto space-y-4 p-4 text-center">
@@ -34,7 +35,8 @@ export default function About() {
                 eager to hear from you. Happy browsing!
             </p>
 
-            <Link href="/" className="bg-amber-600 text-white py-2 px-4 rounded-full inline-block mt-4 hover:bg-amber-700">
+            <Link href="/"
+                  className="bg-amber-600 text-white py-2 px-4 rounded-full inline-block mt-4 hover:bg-amber-700">
                 Explore Movies
             </Link>
         </div>

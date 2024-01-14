@@ -30,8 +30,6 @@ export default function RootLayout({
             <SearchBox/>
             {children}
         </Providers>
-
-
         </body>
         </html>
     )

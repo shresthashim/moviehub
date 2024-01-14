@@ -15,12 +15,11 @@ const SearchPage = async ({params}) => {
     const data = await res.json();
     const results = data.results;
 
-
     return (
         <div>
             {results && results.length === 0 && <h1 className='text-2xl text-center pt-6'>No results found</h1>}
 
-            {results && <Results results={results} />}
+            {results && <Results results={results}/>}
         </div>
     );
 };
