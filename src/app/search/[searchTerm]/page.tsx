@@ -1,8 +1,13 @@
 import React from "react";
 import Results from "@/components/Results";
 
-// @ts-ignore
-const SearchPage = async ({ params }) => {
+interface SearchPageProps {
+  params: {
+    searchTerm: string;
+  };
+}
+
+const SearchPage = async ({ params }: SearchPageProps) => {
   const searchTerm = params.searchTerm;
 
   const res = await fetch(
