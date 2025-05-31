@@ -1,22 +1,22 @@
-import React from 'react';
+import React from "react";
 import Card from "@/components/Card";
 
 interface Result {
-    id: number;
-    original_title: string;
+  id: number;
+  original_title: string;
 }
 
 interface ResultsProps {
-    results: Result[];
+  results: Result[];
 }
-const Results: React.FC<ResultsProps> = ({results}) => {
-    return (
-        <div className='sm:grid sm:sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 max-w-6xl mx-auto py-4'>
-            {results.map((result: Result) => (
-                <Card key={result.id} result={result}/>
-            ))}
-        </div>
-    );
+const Results: React.FC<ResultsProps> = ({ results }) => {
+  return (
+    <div className='sm:grid sm:sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 max-w-6xl mx-auto py-4'>
+      {results.map((result: Result) => (
+        <Card key={result.id} result={result} />
+      ))}
+    </div>
+  );
 };
 
 export default Results;
