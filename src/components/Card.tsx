@@ -3,8 +3,23 @@ import Link from "next/link";
 import Image from "next/image";
 import { FiThumbsUp } from "react-icons/fi";
 import { MdDateRange } from "react-icons/md";
-// @ts-ignore
-const Card = ({ result }) => {
+
+interface Result {
+  id: number;
+  backdrop_path?: string;
+  poster_path?: string;
+  overview: string;
+  title?: string;
+  name?: string;
+  release_date?: string;
+  first_air_date?: string;
+}
+
+interface CardProps {
+  result: Result;
+}
+
+const Card: React.FC<CardProps> = ({ result }) => {
   return (
     <div className='cursor-pointer sm:p-3 sm:hover:shadow-slate-400 sm:shadow-md rounded-lg sm:border sm:border-slate-400 sm:m-2 transition-shadow duration-200 group'>
       <Link href={`/movie/${result.id}`}>
@@ -28,7 +43,6 @@ const Card = ({ result }) => {
           <p className='flex items-center'>
             <MdDateRange className='h-5 w-5 mr-1' />
             <span>{result.release_date || result.first_air_date}</span>
-       
           </p>
         </div>
       </Link>
