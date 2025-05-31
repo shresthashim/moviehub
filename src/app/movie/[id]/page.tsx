@@ -15,81 +15,84 @@ export default async function MoviePage({ params }: MoviePageProps) {
   const movie = await res.json();
 
   return (
-    <div className='w-full'>
-      <div className='py-4 md:pt-8 flex flex-col md:flex-row items-center content-center max-w-6xl mx-auto md:space-x-6'>
-        <Image
-          alt='Movie Poster'
-          src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
-          width={300}
-          height={450}
-          style={{
-            maxWidth: "100%",
-            height: "100%",
-          }}
-          className='rounded-lg shadow-md'
-          placeholder='blur'
-          blurDataURL='/spinner.svg'
-        />
-        <div className='p-2 flex flex-col'>
-          <h2 className='text-2xl md:text-3xl mb-3 font-bold'>{movie.title || movie.name}</h2>
+    <div className='w-full  text-gray-800 dark:text-gray-100'>
+      <div className='py-8 flex flex-col md:flex-row items-start max-w-6xl mx-auto px-4 md:space-x-8'>
+        <div className='w-full md:w-1/3 mb-6 md:mb-0'>
+          <Image
+            alt='Movie Poster'
+            src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
+            width={500}
+            height={750}
+            className='rounded-xl shadow-lg w-full h-auto object-cover'
+            placeholder='blur'
+            blurDataURL='/spinner.svg'
+          />
+        </div>
 
-          <p className='text-lg mb-3'>{movie.tagline}</p>
-          <p className='text-lg mb-3'>{movie.overview}</p>
+        <div className='w-full md:w-2/3'>
+          <h1 className='text-3xl md:text-4xl font-extrabold mb-4'>{movie.title || movie.name}</h1>
+          <p className='italic text-lg text-gray-500 dark:text-gray-400 mb-4'>{movie.tagline}</p>
+          <p className='text-base leading-relaxed mb-6'>{movie.overview}</p>
 
-          <div className='mb-3 flex items-center'>
-            <span className='font-semibold mr-2'>
-              <FiCalendar />
-            </span>
-            <span className='font-semibold'>Release Date :</span>{" "}
-            {new Date(movie.release_date).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </div>
-          <div className='mb-3 flex items-center'>
-            <span className='font-semibold mr-2'>
-              <FiStar />
-            </span>
-            <span className='font-semibold'>Rating :</span> {movie.vote_average} / 10 ({movie.vote_count} votes)
-          </div>
-          <div className='mb-3 flex items-center'>
-            <span className='font-semibold mr-2'>
-              <FiTrendingUp />
-            </span>
-            <span className='font-semibold'>Popularity :</span> {movie.popularity}
-          </div>
-          <div className='mb-3 flex items-center'>
-            <span className='font-semibold mr-2'>
-              <FiDollarSign />
-            </span>
-            <span className='font-semibold'>Revenue :</span> ${movie.revenue.toLocaleString()}
-          </div>
-          <div className='mb-3 flex items-center'>
-            <span className='font-semibold mr-2'>
-              <FiClock />
-            </span>
-            <span className='font-semibold'>Runtime :</span> {movie.runtime} minutes
-          </div>
-          <div className='mb-3 flex items-center'>
-            <span className='font-semibold mr-2'>
-              <FiCheckCircle />
-            </span>
-            <span className='font-semibold'>Status :</span>{" "}
-            {movie.status === "Released" ? (
-              <span className='text-green-500'>Released</span>
-            ) : (
-              <span className='text-red-500'>{movie.status}</span>
-            )}
+          <ul className='space-y-4'>
+            <InfoItem icon={<FiCalendar />} label='Release Date'>
+              {new Date(movie.release_date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </InfoItem>
+
+            <InfoItem icon={<FiStar />} label='Rating'>
+              {movie.vote_average} / 10 <span className='ml-2'>({movie.vote_count} votes)</span>
+            </InfoItem>
+
+            <InfoItem icon={<FiTrendingUp />} label='Popularity'>
+              {movie.popularity}
+            </InfoItem>
+
+            <InfoItem icon={<FiDollarSign />} label='Revenue'>
+              ${movie.revenue.toLocaleString()}
+            </InfoItem>
+
+            <InfoItem icon={<FiClock />} label='Runtime'>
+              {movie.runtime} minutes
+            </InfoItem>
+
+            <InfoItem icon={<FiCheckCircle />} label='Status'>
+              {movie.status === "Released" ? (
+                <span className='text-green-600 font-semibold'>Released</span>
+              ) : (
+                <span className='text-red-600 font-semibold'>{movie.status}</span>
+              )}
+            </InfoItem>
+          </ul>
+
+          <div className='mt-8'>
+            <Link href={`/movie/${movieId}/review`}>
+              <button className='bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-5 rounded-xl transition'>
+                Check Reviews
+              </button>
+            </Link>
           </div>
         </div>
       </div>
-
-      <div className='flex flex-col md:flex-row items-center content-center max-w-6xl mx-auto md:space-x-6'>
-        <Link href={`/movie/${movieId}/review`}>
-          <button className='bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg my-2'>Check Reviews</button>
-        </Link>
-      </div>
     </div>
+  );
+}
+
+type InfoItemProps = {
+  icon: React.ReactNode;
+  label: string;
+  children: React.ReactNode;
+};
+
+function InfoItem({ icon, label, children }: InfoItemProps) {
+  return (
+    <li className='flex items-center'>
+      <span className='text-lg text-blue-600 dark:text-blue-400 mr-2'>{icon}</span>
+      <span className='font-semibold mr-2'>{label}:</span>
+      <span>{children}</span>
+    </li>
   );
 }
