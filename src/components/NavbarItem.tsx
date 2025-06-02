@@ -12,17 +12,18 @@ interface NavbarItemProps {
 const NavbarItem = ({ title, param }: NavbarItemProps) => {
   const searchParams = useSearchParams();
   const genre = searchParams.get("genre");
+
+  const isActive = genre === param;
+
   return (
-    <div>
-      <Link
-        className={`m-4 hover:text-amber-600 font-semibold  p-2 ${
-          genre && genre === param && "underline underline-offset-8 decoration-4 decoration-amber-500 rounded-lg"
-        } `}
-        href={`/?genre=${param}`}
-      >
-        {title}
-      </Link>
-    </div>
+    <Link
+      href={`/?genre=${param}`}
+      className={`inline-block font-semibold px-2 py-1 text-sm sm:text-base md:text-lg hover:text-amber-600 ${
+        isActive && "underline underline-offset-8 decoration-4 decoration-amber-500 rounded-lg"
+      }`}
+    >
+      {title}
+    </Link>
   );
 };
 
