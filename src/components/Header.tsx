@@ -3,6 +3,7 @@ import { AiFillHome } from "react-icons/ai";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import { FaQuestionCircle, FaUser } from "react-icons/fa";
 import DarkModeSwitch from "@/components/DarkModeSwitch";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 
 const Header = () => {
@@ -22,13 +23,25 @@ const Header = () => {
 
       <div className='flex items-center gap-3'>
         <DarkModeSwitch />
-        <Link
-          href='/sign-in'
-          className='flex items-center gap-1 border border-amber-500 text-amber-500 hover:bg-amber-500 hover:text-white px-3 py-1 rounded-md text-sm font-semibold'
-        >
-          <FaUser className='text-base text-white' />
-          <span className='hidden text-white sm:inline'>SIGN IN</span>
-        </Link>
+        <SignedIn>
+          <UserButton
+            appearance={{
+              elements: {
+                userButtonAvatarBox: "w-10 h-10",
+                userButtonAvatar: "w-10 h-10 rounded-full",
+              },
+            }}
+          />
+        </SignedIn>
+        <SignedOut>
+          <Link
+            href='/sign-in'
+            className='flex items-center gap-1 border border-amber-500 text-amber-500 hover:bg-amber-500 hover:text-white px-3 py-1 rounded-md text-sm font-semibold'
+          >
+            <FaUser className='text-base text-white' />
+            <span className='hidden text-white sm:inline'>SIGN IN</span>
+          </Link>
+        </SignedOut>
       </div>
     </div>
   );
