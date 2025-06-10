@@ -37,5 +37,13 @@ export async function POST(req: Request) {
   console.log(`✅ Received event "${evt.type}" for user ID: ${id}`);
   console.log("Payload:", bodyText);
 
+  if (evt.type === "user.created") {
+    console.log(`New user created with ID: ${id}`);
+  } else if (evt.type === "user.updated") {
+    console.log(`User updated with ID: ${id}`);
+  } else if (evt.type === "user.deleted") {
+    console.log(`User deleted with ID: ${id}`);
+  }
+
   return new Response("Webhook received", { status: 200 });
 }
