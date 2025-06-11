@@ -5,7 +5,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import type { WebhookEvent } from "@clerk/nextjs/server";
 
 export async function POST(req: Request): Promise<Response> {
-  const SIGNING_SECRET = process.env.SIGNING_SECRET;
+  const SIGNING_SECRET = process.env.CLERK_WEBHOOK_SIGNING_SECRET;
 
   if (!SIGNING_SECRET) {
     throw new Error("Missing SIGNING_SECRET. Please set it in your .env file from the Clerk Dashboard.");
