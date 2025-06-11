@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import SearchBox from "@/components/SearchBox";
 import Providers from "./Providers";
 import { ClerkProvider } from "@clerk/nextjs";
+import Loading from "./loading";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,8 +23,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <body className={inter.className}>
           <Providers>
             <Header />
-            <Navbar />
-            <SearchBox />
+            <Suspense fallback={<Loading />}>
+              <Navbar />
+            </Suspense>
+            <Suspense fallback={<Loading />}>
+              <SearchBox />
+            </Suspense>
             {children}
           </Providers>
         </body>
