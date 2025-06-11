@@ -1,48 +1,77 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { WebhookEvent } from "@clerk/nextjs/server";
+import { createOrUpdateUser, deleteUser } from "@/lib/actions/user";
+import { clerkClient } from "@clerk/nextjs/server";
+import type { WebhookEvent } from "@clerk/nextjs/server";
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<Response> {
   const SIGNING_SECRET = process.env.SIGNING_SECRET;
+
   if (!SIGNING_SECRET) {
-    throw new Error("Missing SIGNING_SECRET in environment – copy from the Clerk Dashboard");
+    throw new Error("Missing SIGNING_SECRET. Please set it in your .env file from the Clerk Dashboard.");
   }
 
   const wh = new Webhook(SIGNING_SECRET);
 
-  const hdr = await headers();
-  const svixId = hdr.get("svix-id");
-  const svixTimestamp = hdr.get("svix-timestamp");
-  const svixSignature = hdr.get("svix-signature");
+  const headerPayload = headers();
+  const svix_id = headerPayload.get("svix-id");
+  const svix_timestamp = headerPayload.get("svix-timestamp");
+  const svix_signature = headerPayload.get("svix-signature");
 
-  if (!svixId || !svixTimestamp || !svixSignature) {
+  if (!svix_id || !svix_timestamp || !svix_signature) {
     return new Response("Missing Svix headers", { status: 400 });
   }
 
-  const bodyText = await req.text();
+  const payload = await req.json();
+  const body = JSON.stringify(payload);
+
   let evt: WebhookEvent;
 
   try {
-    evt = wh.verify(bodyText, {
-      "svix-id": svixId,
-      "svix-timestamp": svixTimestamp,
-      "svix-signature": svixSignature,
+    evt = wh.verify(body, {
+      "svix-id": svix_id,
+      "svix-timestamp": svix_timestamp,
+      "svix-signature": svix_signature,
     }) as WebhookEvent;
   } catch (err) {
-    console.error("❌ Svix verification failed:", err);
-    return new Response("Verification error", { status: 400 });
+    console.error("Webhook verification failed:", err);
+    return new Response("Verification failed", { status: 400 });
   }
 
+  const eventType = evt.type;
   const { id } = evt.data;
-  console.log(`✅ Received event "${evt.type}" for user ID: ${id}`);
-  console.log("Payload:", bodyText);
 
-  if (evt.type === "user.created") {
-    console.log(`New user created with ID: ${id}`);
-  } else if (evt.type === "user.updated") {
-    console.log(`User updated with ID: ${id}`);
-  } else if (evt.type === "user.deleted") {
-    console.log(`User deleted with ID: ${id}`);
+  if (eventType === "user.created" || eventType === "user.updated") {
+    const { first_name, last_name, image_url, email_addresses } = evt.data;
+
+    try {
+      const user = await createOrUpdateUser(id ?? "", first_name ?? "", last_name ?? "", image_url ?? "", email_addresses ?? []);
+
+      if (user && eventType === "user.created") {
+        try {
+          const client = await clerkClient();
+          await client.users.updateUserMetadata(id ?? "", {
+            publicMetadata: {
+              userMongoId: user._id,
+            },
+          });
+        } catch (error) {
+          console.error("Failed to update Clerk user metadata:", error);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to create or update user:", error);
+      return new Response("Failed to create or update user", { status: 400 });
+    }
+  }
+
+  if (eventType === "user.deleted") {
+    try {
+      await deleteUser(id ?? "");
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+      return new Response("Failed to delete user", { status: 400 });
+    }
   }
 
   return new Response("Webhook received", { status: 200 });

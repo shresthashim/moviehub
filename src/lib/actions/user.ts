@@ -1,51 +1,37 @@
 import UserModel from "../models/user.model";
 import { connect } from "../mongodb/mongoose";
-import { User } from "@/schemas/user";
 
 export const createOrUpdateUser = async (
   id: string,
-  first_name: User["firstName"],
-  last_name: User["lastName"],
-  email_addresses: { email_address: string }[],
-  image_url: User["profilePicture"]
+  first_name: string,
+  last_name: string,
+  image_url: string,
+  email_addresses: { email_address: string }[]
 ) => {
-  await connect();
-
   try {
+    await connect();
     const user = await UserModel.findOneAndUpdate(
-      {
-        clerkId: id,
-      },
+      { clerkId: id },
       {
         $set: {
           firstName: first_name,
           lastName: last_name,
-          email: email_addresses[0]?.email_address,
           profilePicture: image_url,
+          email: email_addresses[0].email_address,
         },
       },
-      {
-        new: true,
-        upsert: true,
-      }
+      { upsert: true, new: true }
     );
     return user;
   } catch (error) {
-    console.error("Error creating or updating user:", error);
-    throw new Error("Failed to create or update user");
+    console.log("Error: Could not create or update user:", error);
   }
 };
-
 export const deleteUser = async (id: string) => {
-  await connect();
-
   try {
-    const user = await UserModel.findOneAndDelete({
-      clerkId: id,
-    });
-    return user;
+    await connect();
+    await UserModel.findOneAndDelete({ clerkId: id });
   } catch (error) {
-    console.error("Error deleting user:", error);
-    throw new Error("Failed to delete user");
+    console.log("Error: Could not delete user:", error);
   }
 };
