@@ -52,7 +52,7 @@ export async function POST(req: Request): Promise<Response> {
           const client = await clerkClient();
           await client.users.updateUserMetadata(id ?? "", {
             publicMetadata: {
-              userMongoId: user._id,
+              userMongoId: user._id.toString(),
             },
           });
         } catch (error) {
