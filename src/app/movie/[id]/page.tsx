@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import Link from "next/link";
 import { FiCalendar, FiStar, FiTrendingUp, FiClock, FiCheckCircle, FiDollarSign } from "react-icons/fi";
+import Favorites from "@/components/Favorites";
 
 type MoviePageProps = {
   params: {
@@ -36,27 +37,30 @@ export default async function MoviePage({ params }: MoviePageProps) {
 
           <ul className='space-y-4'>
             <InfoItem icon={<FiCalendar />} label='Release Date'>
-              {new Date(movie.release_date).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+              {movie.release_date
+                ? new Date(movie.release_date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
+                : "Unknown"}
             </InfoItem>
 
             <InfoItem icon={<FiStar />} label='Rating'>
-              {movie.vote_average} / 10 <span className='ml-2'>({movie.vote_count} votes)</span>
+              {movie.vote_average != null ? `${movie.vote_average} / 10` : "N/A"}{" "}
+              <span className='ml-2'>({movie.vote_count != null ? `${movie.vote_count} votes` : "No votes"})</span>
             </InfoItem>
 
             <InfoItem icon={<FiTrendingUp />} label='Popularity'>
-              {movie.popularity}
+              {movie.popularity != null ? movie.popularity : "N/A"}
             </InfoItem>
 
             <InfoItem icon={<FiDollarSign />} label='Revenue'>
-              ${movie.revenue.toLocaleString()}
+              {movie.revenue != null ? `$${movie.revenue.toLocaleString()}` : "N/A"}
             </InfoItem>
 
             <InfoItem icon={<FiClock />} label='Runtime'>
-              {movie.runtime} minutes
+              {movie.runtime != null ? `${movie.runtime} minutes` : "N/A"}
             </InfoItem>
 
             <InfoItem icon={<FiCheckCircle />} label='Status'>
@@ -74,6 +78,14 @@ export default async function MoviePage({ params }: MoviePageProps) {
                 Check Reviews
               </button>
             </Link>
+            <Favorites
+              movieId={movieId}
+              title={movie.title || movie.name}
+              overview={movie.overview}
+              releaseDate={movie.release_date}
+              voteCount={movie.vote_count}
+              image={movie.poster_path || movie.backdrop_path}
+            />
           </div>
         </div>
       </div>
