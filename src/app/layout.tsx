@@ -22,7 +22,7 @@ const body = Sora({
 
 export const metadata: Metadata = {
   title: {
-    default: "MovieHub — Discover films worth watching",
+    default: "MovieHub | Discover films worth watching",
     template: "%s · MovieHub",
   },
   description:

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { FiPlus } from "react-icons/fi";
+import FaqAccordion from "@/components/ui/FaqAccordion";
 
 export const metadata: Metadata = { title: "FAQ" };
 
@@ -40,22 +40,8 @@ export default function FAQPage() {
         </h1>
       </div>
 
-      <div className="mt-10 space-y-3">
-        {faqs.map((faq, i) => (
-          <details
-            key={i}
-            open={i === 0}
-            className="group rounded-2xl border border-border bg-surface transition-colors open:border-accent/40"
-          >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 [&::-webkit-details-marker]:hidden">
-              <h2 className="text-base font-semibold text-foreground sm:text-lg">{faq.question}</h2>
-              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-surface-2 text-muted transition-all duration-300 group-open:rotate-45 group-open:bg-accent group-open:text-accent-foreground">
-                <FiPlus className="size-4" />
-              </span>
-            </summary>
-            <p className="px-6 pb-5 leading-relaxed text-muted">{faq.answer}</p>
-          </details>
-        ))}
+      <div className="mt-10">
+        <FaqAccordion items={faqs} />
       </div>
     </div>
   );

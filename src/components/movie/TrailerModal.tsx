@@ -1,52 +1,38 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
 import { FiPlay, FiX } from "react-icons/fi";
 
 export default function TrailerModal({ videoKey, label = "Watch trailer" }: { videoKey: string; label?: string }) {
-  const [open, setOpen] = useState(false);
-
-  // Subscribe to Escape + lock body scroll while open (effect subscribes to an
-  // external system, which is the intended use of useEffect).
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [open]);
-
   return (
-    <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground transition-transform hover:scale-105"
-      >
-        <FiPlay className="size-4 fill-accent-foreground" />
-        {label}
-      </button>
-
-      {open && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Trailer"
+    <Dialog.Root>
+      <Dialog.Trigger asChild>
+        <button
+          type="button"
+          className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground transition-transform hover:scale-105"
         >
-          <div className="relative aspect-video w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+          <FiPlay className="size-4 fill-accent-foreground" />
+          {label}
+        </button>
+      </Dialog.Trigger>
+
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-sm data-[state=closed]:animate-overlay-out data-[state=open]:animate-overlay-in" />
+        <Dialog.Content
+          aria-describedby={undefined}
+          className="fixed left-1/2 top-1/2 z-[100] w-[92vw] max-w-4xl -translate-x-1/2 -translate-y-1/2 focus:outline-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
+        >
+          <Dialog.Title className="sr-only">Trailer</Dialog.Title>
+          <Dialog.Close asChild>
             <button
               type="button"
-              onClick={() => setOpen(false)}
               aria-label="Close trailer"
               className="absolute -top-11 right-0 text-white/80 transition-colors hover:text-white"
             >
               <FiX className="size-7" />
             </button>
+          </Dialog.Close>
+          <div className="relative aspect-video w-full">
             <iframe
               src={`https://www.youtube.com/embed/${videoKey}?autoplay=1&rel=0`}
               title="Trailer"
@@ -55,8 +41,8 @@ export default function TrailerModal({ videoKey, label = "Watch trailer" }: { vi
               className="size-full overflow-hidden rounded-xl border border-white/10 bg-black"
             />
           </div>
-        </div>
-      )}
-    </>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

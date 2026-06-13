@@ -15,11 +15,11 @@ export default function SectionHeader({
   return (
     <div className="mb-4 flex items-end justify-between gap-4">
       <div className="min-w-0">
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 sm:-ml-3.5">
           <span className="h-6 w-1 rounded-full bg-accent" aria-hidden />
           <h2 className="font-display text-2xl tracking-wide text-foreground sm:text-3xl">{title}</h2>
         </div>
-        {subtitle && <p className="mt-1 pl-3.5 text-sm text-muted">{subtitle}</p>}
+        {subtitle && <p className="mt-1 text-sm text-muted">{subtitle}</p>}
       </div>
       {href && (
         <Link

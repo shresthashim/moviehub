@@ -17,7 +17,8 @@ import { WATCH_REGION } from "@/lib/constants";
 import GenreChips from "@/components/movie/GenreChips";
 import CastList from "@/components/movie/CastList";
 import WatchProviders from "@/components/movie/WatchProviders";
-import MovieRow from "@/components/movie/MovieRow";
+import MovieScroller from "@/components/movie/MovieScroller";
+import MovieTabs, { type MovieTab } from "@/components/movie/MovieTabs";
 import TrailerModal from "@/components/movie/TrailerModal";
 import FavoriteButton from "@/components/movie/FavoriteButton";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -48,6 +49,21 @@ export default async function MoviePage({ params }: MoviePageProps) {
   const providers = getRegionProviders(movie, WATCH_REGION);
   const recommendations = movie.recommendations?.results ?? [];
   const similar = movie.similar?.results ?? [];
+
+  const relatedTabs: MovieTab[] = [
+    recommendations.length > 0 && {
+      value: "recommended",
+      label: "Recommended",
+      count: recommendations.length,
+      content: <MovieScroller movies={recommendations} />,
+    },
+    similar.length > 0 && {
+      value: "similar",
+      label: "More Like This",
+      count: similar.length,
+      content: <MovieScroller movies={similar} />,
+    },
+  ].filter(Boolean) as MovieTab[];
 
   return (
     <div>
@@ -172,16 +188,10 @@ export default async function MoviePage({ params }: MoviePageProps) {
           </section>
         )}
 
-        {recommendations.length > 0 && (
-          <div className="mt-14">
-            <MovieRow title="Recommended" movies={recommendations} />
-          </div>
-        )}
-
-        {similar.length > 0 && (
-          <div className="mt-14">
-            <MovieRow title="More Like This" movies={similar} />
-          </div>
+        {relatedTabs.length > 0 && (
+          <section className="mt-14">
+            <MovieTabs tabs={relatedTabs} />
+          </section>
         )}
       </div>
     </div>

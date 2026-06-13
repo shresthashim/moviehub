@@ -19,12 +19,12 @@ export default function MenuItem({ title, address, Icon }: MenuItemProps) {
       href={address}
       aria-current={isActive ? "page" : undefined}
       title={title}
-      className={`group flex items-center gap-2 rounded-full px-2.5 py-1.5 text-sm font-medium transition-colors sm:px-3 ${
+      className={`group flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
         isActive ? "text-accent" : "text-muted hover:text-foreground"
       }`}
     >
-      <Icon className="size-[1.05rem] shrink-0 transition-transform group-hover:scale-110 sm:size-4" />
-      <span className="hidden sm:inline">{title}</span>
+      <Icon className="size-4 shrink-0 transition-transform group-hover:scale-110" />
+      <span>{title}</span>
     </Link>
   );
 }

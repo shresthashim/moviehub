@@ -3,8 +3,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { currentUser } from "@clerk/nextjs/server";
 import { FiHeart } from "react-icons/fi";
-import User, { type FavoriteMovie } from "@/lib/db/models/user";
-import { connect } from "@/lib/db/mongoose";
+import { type FavoriteMovie } from "@/lib/db/models/user";
+import { getOrCreateUserFromClerk } from "@/lib/db/actions/user";
 import MovieGrid from "@/components/movie/MovieGrid";
 import EmptyState from "@/components/ui/EmptyState";
 import type { MovieListItem } from "@/lib/tmdb";
@@ -46,12 +46,8 @@ export default async function FavoritesPage() {
 
   let favs: FavoriteMovie[] = [];
   try {
-    const mongoId = user.publicMetadata?.userMongoId;
-    if (mongoId) {
-      await connect();
-      const dbUser = await User.findById(String(mongoId));
-      favs = dbUser?.favoriteMovies ?? [];
-    }
+    const dbUser = await getOrCreateUserFromClerk(user);
+    favs = dbUser?.favoriteMovies ?? [];
   } catch (error) {
     console.error("Failed to load favorites:", error);
   }

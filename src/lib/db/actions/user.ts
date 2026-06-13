@@ -1,5 +1,28 @@
-import UserModel from "@/lib/db/models/user";
+import type { User as ClerkUser } from "@clerk/nextjs/server";
+import UserModel, { type UserDocument } from "@/lib/db/models/user";
 import { connect } from "@/lib/db/mongoose";
+
+/**
+ * Resolve the MongoDB user for a signed-in Clerk user, creating it on demand.
+ *
+ * Favorites must not depend on the Clerk webhook having run (it never fires on
+ * localhost and may have missed accounts created before it was wired up), so we
+ * key off `clerkId` — always available — and upsert the record if it's missing.
+ */
+export const getOrCreateUserFromClerk = async (clerkUser: ClerkUser): Promise<UserDocument> => {
+  await connect();
+
+  const existing = await UserModel.findOne({ clerkId: clerkUser.id });
+  if (existing) return existing;
+
+  return UserModel.create({
+    clerkId: clerkUser.id,
+    firstName: clerkUser.firstName || "Movie",
+    lastName: clerkUser.lastName || "Fan",
+    email: clerkUser.emailAddresses[0]?.emailAddress,
+    profilePicture: clerkUser.imageUrl,
+  });
+};
 
 export const createOrUpdateUser = async (
   id: string,

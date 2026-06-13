@@ -4,7 +4,14 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiSearch, FiX } from "react-icons/fi";
 
-export default function SearchBox({ className = "" }: { className?: string }) {
+export default function SearchBox({
+  className = "",
+  onSubmitted,
+}: {
+  className?: string;
+  /** Called after a successful search navigation — e.g. to close a drawer. */
+  onSubmitted?: () => void;
+}) {
   const router = useRouter();
   const [input, setInput] = useState("");
 
@@ -13,6 +20,7 @@ export default function SearchBox({ className = "" }: { className?: string }) {
     const query = input.trim();
     if (!query) return;
     router.push(`/search/${encodeURIComponent(query)}`);
+    onSubmitted?.();
   };
 
   return (

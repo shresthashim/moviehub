@@ -49,6 +49,9 @@ export default function FavoriteButton({ movieId, title, image, overview, releas
         setOverride(previous);
         console.error("Failed to update favorites");
       } else {
+        // Refresh Clerk's client-side user so the derived state stays correct
+        // after client-side navigation, then revalidate server components.
+        await user?.reload();
         router.refresh();
       }
     } catch (error) {
