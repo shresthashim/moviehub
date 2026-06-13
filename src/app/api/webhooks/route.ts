@@ -1,6 +1,6 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { createOrUpdateUser, deleteUser } from "@/lib/actions/user";
+import { createOrUpdateUser, deleteUser } from "@/lib/db/actions/user";
 import { clerkClient } from "@clerk/nextjs/server";
 import type { WebhookEvent } from "@clerk/nextjs/server";
 
@@ -8,12 +8,12 @@ export async function POST(req: Request): Promise<Response> {
   const SIGNING_SECRET = process.env.CLERK_WEBHOOK_SIGNING_SECRET;
 
   if (!SIGNING_SECRET) {
-    throw new Error("Missing SIGNING_SECRET. Please set it in your .env file from the Clerk Dashboard.");
+    throw new Error("Missing CLERK_WEBHOOK_SIGNING_SECRET. Set it in your .env file from the Clerk Dashboard.");
   }
 
   const wh = new Webhook(SIGNING_SECRET);
 
-  const headerPayload = headers();
+  const headerPayload = await headers();
   const svix_id = headerPayload.get("svix-id");
   const svix_timestamp = headerPayload.get("svix-timestamp");
   const svix_signature = headerPayload.get("svix-signature");
@@ -45,15 +45,19 @@ export async function POST(req: Request): Promise<Response> {
     const { first_name, last_name, image_url, email_addresses } = evt.data;
 
     try {
-      const user = await createOrUpdateUser(id ?? "", first_name ?? "", last_name ?? "", image_url ?? "", email_addresses ?? []);
+      const user = await createOrUpdateUser(
+        id ?? "",
+        first_name ?? "",
+        last_name ?? "",
+        image_url ?? "",
+        email_addresses ?? []
+      );
 
       if (user && eventType === "user.created") {
         try {
           const client = await clerkClient();
           await client.users.updateUserMetadata(id ?? "", {
-            publicMetadata: {
-              userMongoId: user._id.toString(),
-            },
+            publicMetadata: { userMongoId: user._id.toString() },
           });
         } catch (error) {
           console.error("Failed to update Clerk user metadata:", error);

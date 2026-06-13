@@ -1,5 +1,5 @@
-import User from "../../../../lib/models/user.model";
-import { connect } from "../../../../lib/mongodb/mongoose";
+import User from "@/lib/db/models/user";
+import { connect } from "@/lib/db/mongoose";
 import { clerkClient, currentUser } from "@clerk/nextjs/server";
 
 type Fav = {
@@ -11,85 +11,55 @@ type Fav = {
   imageUrl?: string;
 };
 
-type UserType = {
-  favoriteMovies: Fav[];
-};
-
 export const PUT = async (req: Request): Promise<Response> => {
-  const user = await currentUser();
-  const client = await clerkClient();
-
   try {
-    await connect();
-    const data = await req.json();
-
+    const user = await currentUser();
     if (!user) {
       return new Response("Unauthorized", { status: 401 });
     }
 
-    const existingUser = await User.findById(user.publicMetadata.userMongoId);
+    await connect();
+    const data = await req.json();
+    const mongoId = user.publicMetadata.userMongoId;
 
+    const existingUser = await User.findById(mongoId);
     if (!existingUser) {
       return new Response("User not found", { status: 404 });
     }
 
-    if (!existingUser.favoriteMovies) {
-      existingUser.favoriteMovies = [];
-    }
+    const isFav = existingUser.favoriteMovies?.some((fav: Fav) => fav.movieId === data.movieId);
 
-  
-    const isFav = existingUser.favoriteMovies.some((fav: Fav) => fav.movieId === data.movieId);
-
-    let updatedUser: UserType | null = null;
-
-    if (isFav) {
-     
-      updatedUser = await User.findByIdAndUpdate(
-        user.publicMetadata.userMongoId,
-        { $pull: { favoriteMovies: { movieId: data.movieId } } },
-        { new: true }
-      );
-    } else {
-   
-      updatedUser = await User.findByIdAndUpdate(
-        user.publicMetadata.userMongoId,
-        {
+    const update = isFav
+      ? { $pull: { favoriteMovies: { movieId: data.movieId } } }
+      : {
           $addToSet: {
             favoriteMovies: {
               movieId: data.movieId,
               title: data.title,
               description: data.overview,
               releaseDate: data.releaseDate ? new Date(data.releaseDate) : undefined,
-              rating: data.voteCount,
+              rating: data.rating ?? 0,
               imageUrl: data.image,
             },
           },
-        },
-        { new: true }
-      );
-    }
+        };
 
+    const updatedUser = await User.findByIdAndUpdate(mongoId, update, { new: true });
     if (!updatedUser) {
       return new Response("Failed to update user favorites", { status: 500 });
     }
 
-  
-    const updatedFavs: string[] = updatedUser.favoriteMovies?.map((fav: Fav) => fav.movieId) || [];
+    const updatedFavs: string[] = updatedUser.favoriteMovies?.map((fav: Fav) => fav.movieId) ?? [];
 
-  
-    const clerkUser = await client.users.getUser(user.id);
-    const currentMetadata = clerkUser.publicMetadata || {};
-
+    // Reuse the metadata we already have from currentUser() instead of an extra getUser() call.
+    const client = await clerkClient();
     await client.users.updateUserMetadata(user.id, {
-      publicMetadata: {
-        ...currentMetadata,
-        favs: updatedFavs,
-      },
+      publicMetadata: { ...user.publicMetadata, favs: updatedFavs },
     });
 
-    return new Response(JSON.stringify(updatedUser), { status: 200 });
+    return Response.json({ favs: updatedFavs }, { status: 200 });
   } catch (error) {
-    console.error("Error adding favs to the user:", error);
-    return new Response("Error adding favs to the user", { status: 500 });
+    console.error("Error updating user favorites:", error);
+    return new Response("Error updating user favorites", { status: 500 });
   }
 };

@@ -1,5 +1,5 @@
-import UserModel from "../models/user.model";
-import { connect } from "../mongodb/mongoose";
+import UserModel from "@/lib/db/models/user";
+import { connect } from "@/lib/db/mongoose";
 
 export const createOrUpdateUser = async (
   id: string,
@@ -17,21 +17,22 @@ export const createOrUpdateUser = async (
           firstName: first_name,
           lastName: last_name,
           profilePicture: image_url,
-          email: email_addresses[0].email_address,
+          email: email_addresses[0]?.email_address,
         },
       },
       { upsert: true, new: true }
     );
     return user;
   } catch (error) {
-    console.log("Error: Could not create or update user:", error);
+    console.error("Error: Could not create or update user:", error);
   }
 };
+
 export const deleteUser = async (id: string) => {
   try {
     await connect();
     await UserModel.findOneAndDelete({ clerkId: id });
   } catch (error) {
-    console.log("Error: Could not delete user:", error);
+    console.error("Error: Could not delete user:", error);
   }
 };

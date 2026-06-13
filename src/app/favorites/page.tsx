@@ -1,81 +1,93 @@
-"use client";
+import React from "react";
+import Link from "next/link";
+import type { Metadata } from "next";
+import { currentUser } from "@clerk/nextjs/server";
+import { FiHeart } from "react-icons/fi";
+import User, { type FavoriteMovie } from "@/lib/db/models/user";
+import { connect } from "@/lib/db/mongoose";
+import MovieGrid from "@/components/movie/MovieGrid";
+import EmptyState from "@/components/ui/EmptyState";
+import type { MovieListItem } from "@/lib/tmdb";
 
-import Results from "@/components/Results";
-import { useEffect, useState } from "react";
-import { useUser } from "@clerk/nextjs";
-import Loading from "../loading";
+export const metadata: Metadata = { title: "Favorites" };
+export const dynamic = "force-dynamic";
 
-type Fav = {
-  movieId: string;
-  title?: string;
-  description?: string;
-  releaseDate?: string;
-  rating?: number;
-  imageUrl?: string;
-};
+function PageShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+      <p className="text-sm uppercase tracking-widest text-accent">Your collection</p>
+      <h1 className="mt-1 font-display text-5xl tracking-wide text-foreground sm:text-6xl">Favorites</h1>
+      <div className="mt-8">{children}</div>
+    </div>
+  );
+}
 
-export default function Favorites() {
-  const [results, setResults] = useState<Fav[] | null>(null);
-  const { isSignedIn, user, isLoaded } = useUser();
-  const [loading, setLoading] = useState(true);
+const accentButton = "rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-accent-foreground transition-transform hover:scale-105";
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch("/api/user/getFav", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (res.ok) {
-          const data: { favs: Fav[] } = await res.json();
-          setResults(data.favs);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+export default async function FavoritesPage() {
+  const user = await currentUser();
 
-    if (isLoaded && isSignedIn && user) {
-      fetchData();
+  if (!user) {
+    return (
+      <PageShell>
+        <EmptyState
+          icon={<FiHeart />}
+          title="Sign in to view your favorites"
+          description="Save the films you love and find them here across every session."
+          action={
+            <Link href="/sign-in" className={accentButton}>
+              Sign in
+            </Link>
+          }
+        />
+      </PageShell>
+    );
+  }
+
+  let favs: FavoriteMovie[] = [];
+  try {
+    const mongoId = user.publicMetadata?.userMongoId;
+    if (mongoId) {
+      await connect();
+      const dbUser = await User.findById(String(mongoId));
+      favs = dbUser?.favoriteMovies ?? [];
     }
-  }, [isLoaded, isSignedIn, user]);
-  if (!isLoaded) return null;
+  } catch (error) {
+    console.error("Failed to load favorites:", error);
+  }
 
-  if (!isSignedIn) {
+  if (favs.length === 0) {
     return (
-      <div className='text-center mt-10'>
-        <h1 className='text-xl my-5'>Please sign in to view your favorites</h1>
-      </div>
+      <PageShell>
+        <EmptyState
+          icon={<FiHeart />}
+          title="No favorites yet"
+          description="Browse the catalogue and tap the heart on any film to start your collection."
+          action={
+            <Link href="/discover" className={accentButton}>
+              Discover films
+            </Link>
+          }
+        />
+      </PageShell>
     );
   }
 
-  if (loading) {
-    return (
-      <div className='text-center pt-6'>
-        <Loading />
-      </div>
-    );
-  }
-
-  if (!results || results.length === 0) {
-    return <h1 className='text-center pt-6'>No results found</h1>;
-  }
+  const movies: MovieListItem[] = favs.map((f) => ({
+    id: Number(f.movieId) || 0,
+    title: f.title,
+    overview: f.description ?? "",
+    poster_path: f.imageUrl ?? "",
+    release_date: f.releaseDate ? new Date(f.releaseDate).toISOString().slice(0, 10) : "",
+    vote_average: f.rating ?? 0,
+  }));
 
   return (
-    <Results
-      results={results.map((result) => ({
-        id: Number(result.movieId) || 0,
-        original_title: result.title ?? "",
-        title: result.title ?? "",
-        backdrop_path: result.imageUrl ?? "",
-        overview: result.description ?? "",
-        release_date: result.releaseDate ? result.releaseDate.substring(0, 10) : "",
-      }))}
-    />
+    <PageShell>
+      <p className="mb-6 -mt-4 text-sm text-muted">
+        {movies.length} saved title{movies.length > 1 ? "s" : ""}
+      </p>
+      <MovieGrid movies={movies} />
+    </PageShell>
   );
 }

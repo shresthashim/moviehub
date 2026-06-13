@@ -1,15 +1,18 @@
 import Link from "next/link";
+import { FiArrowLeft } from "react-icons/fi";
 
 const NotFoundPage = () => {
   return (
-    <div className='flex flex-col mt-4 justify-center items-center px-4 text-center max-w-3xl mx-auto'>
-      <h1 className='text-9xl font-extrabold text-amber-500 mb-6 select-none'>404</h1>
-      <h2 className='text-3xl sm:text-4xl font-bold mb-4'>Page Not Found</h2>
-      <p className='mb-6 text-gray-300'>Sorry, we couldn’t find the page you’re looking for.</p>
-      <Link href='/'>
-        <span className='inline-block bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors'>
-          Go Back Home
-        </span>
+    <div className="mx-auto flex min-h-[70vh] max-w-2xl flex-col items-center justify-center px-4 text-center">
+      <p className="font-display text-[8rem] leading-none tracking-wide text-accent sm:text-[11rem]">404</p>
+      <h1 className="mt-2 text-3xl font-bold text-foreground sm:text-4xl">Page not found</h1>
+      <p className="mt-3 text-muted">Sorry, we couldn&apos;t find the page you were looking for.</p>
+      <Link
+        href="/"
+        className="mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3 text-sm font-semibold text-accent-foreground transition-transform hover:scale-105"
+      >
+        <FiArrowLeft className="size-4" />
+        Back home
       </Link>
     </div>
   );

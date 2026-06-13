@@ -1,60 +1,71 @@
-import React from "react";
-import { FiCalendar, FiUser } from "react-icons/fi";
+import Link from "next/link";
+import { FiCalendar, FiStar, FiArrowLeft, FiMessageSquare } from "react-icons/fi";
+import { getMovieReviews } from "@/lib/tmdb";
+import { formatDate } from "@/lib/utils";
+import EmptyState from "@/components/ui/EmptyState";
 
-interface Review {
-  id: number;
-  author: string;
-  content: string;
-  created_at: string;
-}
+export const metadata = { title: "Reviews" };
 
 interface ReviewPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
-const API_KEY = process.env.API_KEY;
-
-const ReviewPage: React.FC<ReviewPageProps> = async ({ params }) => {
-  const movieId = params.id;
-  const res = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=${API_KEY}&language=en-US`);
-  const data = await res.json();
-
-  const reviews: Review[] = data.results;
+const ReviewPage = async ({ params }: ReviewPageProps) => {
+  const { id } = await params;
+  const reviews = await getMovieReviews(id);
 
   return (
-    <div className='max-w-4xl mx-auto px-4 py-10'>
-      <h2 className='text-3xl font-bold text-center mb-8'>Movie Reviews</h2>
+    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+      <Link
+        href={`/movie/${id}`}
+        className="mb-6 inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-accent"
+      >
+        <FiArrowLeft className="size-4" />
+        Back to movie
+      </Link>
+
+      <h1 className="font-display text-4xl tracking-wide text-foreground sm:text-5xl">Reviews</h1>
+      <p className="mt-1 text-sm text-muted">
+        {reviews.length > 0 ? `${reviews.length} community review${reviews.length > 1 ? "s" : ""}` : "Community reviews"}
+      </p>
 
       {reviews.length === 0 ? (
-        <p className='text-center text-gray-500 dark:text-gray-400'>No reviews available for this movie.</p>
+        <div className="mt-10">
+          <EmptyState icon={<FiMessageSquare />} title="No reviews yet" description="Be the first to discuss this title once reviews are available." />
+        </div>
       ) : (
-        <div className='space-y-6'>
-          {reviews.map((review) => (
-            <div
-              key={review.id}
-              className='bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow border dark:border-gray-700'
-            >
-              <div className='flex items-center text-lg font-semibold mb-2 text-blue-700 dark:text-blue-400'>
-                <FiUser className='mr-2' />
-                {review.author}
-              </div>
-
-              <p className='text-gray-800 dark:text-gray-200 text-base leading-relaxed mb-4 whitespace-pre-line'>
-                {review.content}
-              </p>
-
-              <div className='flex items-center text-sm text-gray-600 dark:text-gray-400'>
-                <FiCalendar className='mr-2' />
-                {new Date(review.created_at).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </div>
-            </div>
-          ))}
+        <div className="mt-8 space-y-5">
+          {reviews.map((review) => {
+            const rating = review.author_details?.rating;
+            return (
+              <article
+                key={review.id}
+                className="rounded-2xl border border-border bg-surface p-6 shadow-card transition-shadow hover:shadow-card-hover"
+              >
+                <header className="mb-4 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-full bg-accent/15 font-display text-lg text-accent">
+                      {review.author.charAt(0).toUpperCase()}
+                    </span>
+                    <div>
+                      <p className="font-semibold text-foreground">{review.author}</p>
+                      <p className="flex items-center gap-1.5 text-xs text-muted">
+                        <FiCalendar className="size-3" />
+                        {formatDate(review.created_at)}
+                      </p>
+                    </div>
+                  </div>
+                  {rating != null && (
+                    <span className="flex shrink-0 items-center gap-1 rounded-full bg-accent/15 px-2.5 py-1 text-sm font-semibold text-accent">
+                      <FiStar className="size-3.5 fill-accent" />
+                      {rating}
+                    </span>
+                  )}
+                </header>
+                <p className="whitespace-pre-line leading-relaxed text-foreground/90">{review.content}</p>
+              </article>
+            );
+          })}
         </div>
       )}
     </div>

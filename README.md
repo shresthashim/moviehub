@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🎬 MovieHub
 
-## Getting Started
+A modern, cinematic **movie-discovery platform** built with **Next.js 16 (App Router)** and **React 19**.
+Browse trending, popular, top-rated, now-playing and upcoming films, filter the entire catalogue,
+dive into rich movie pages (cast, trailers, where-to-watch, recommendations), read reviews, and curate
+a personal collection of favorites.
 
-First, run the development server:
+Powered by the [TMDB](https://www.themoviedb.org/) API, with authentication via
+[Clerk](https://clerk.com/) and favorites persisted in **MongoDB**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ✨ Features
+
+- **Cinematic, dark-first UI** with a refined gold accent and an optional light mode.
+- **Home** — a trailer-enabled featured hero plus horizontal rows for Trending, Popular, Top Rated,
+  Now Playing and Upcoming, and a browse-by-genre strip.
+- **Discover** — filter by genre, sort order and release year with server-rendered pagination.
+- **Search** any film by title.
+- **Rich movie pages** — backdrop hero, poster, genres, ratings, runtime, revenue, status, top cast,
+  an in-page trailer modal, where-to-watch providers, plus recommended & similar titles — all fetched
+  in a single request via TMDB's `append_to_response`.
+- **Community reviews** per title.
+- **Favorites** — save films to your account (synced to MongoDB + Clerk metadata).
+
+## 🧱 Tech stack
+
+| Concern     | Tool                               |
+| ----------- | ---------------------------------- |
+| Framework   | Next.js 16 (App Router, RSC)       |
+| UI runtime  | React 19                           |
+| Styling     | Tailwind CSS + CSS design tokens   |
+| Typography  | Bebas Neue (display) · Sora (body) |
+| Auth        | Clerk                              |
+| Database    | MongoDB + Mongoose                 |
+| Movie data  | TMDB API                           |
+| Theme       | next-themes (dark-first + light)   |
+
+## 🏗️ Architecture
+
+**Server-first.** Every route (`page.tsx`) is a React Server Component that fetches its own data.
+Client components are limited to small interactive leaves: search box, theme toggle, nav active state,
+the favorite button, the discover filter bar, and the trailer modal.
+
+```
+src/
+├─ app/                       # Routes, API handlers, error/loading states
+│  ├─ api/user/fav/           # PUT — toggle a favorite
+│  ├─ api/webhooks/           # Clerk → Mongo user sync (svix-verified)
+│  ├─ discover/               # Filterable, paginated browse
+│  ├─ movie/[id]/             # Movie detail (+ /review)
+│  ├─ search/[searchTerm]/    # Search results
+│  └─ favorites, about, faq, sign-in, sign-up …
+├─ components/
+│  ├─ layout/                 # Header, Footer, MainNav, SearchBox, ThemeToggle
+│  ├─ movie/                  # MovieCard, MovieGrid, MovieRow, Hero, CastList,
+│  │                         #   WatchProviders, TrailerModal, FavoriteButton, GenreChips
+│  ├─ discover/               # FilterBar
+│  └─ ui/                     # RatingBadge, SectionHeader, EmptyState, Pagination, Skeletons
+├─ lib/
+│  ├─ tmdb/                   # TMDB access layer
+│  │  ├─ client.ts            #   core fetch (auth, locale, caching)
+│  │  ├─ images.ts            #   intent-based image URLs
+│  │  ├─ movies.ts            #   endpoints + selectors
+│  │  ├─ types.ts             #   API types
+│  │  └─ index.ts             #   barrel
+│  ├─ db/                     # Mongoose connection, models, actions
+│  ├─ constants.ts            # home rows, sort options, watch region
+│  └─ utils.ts                # formatting + helpers
+└─ proxy.ts                   # Clerk middleware (Next 16 `proxy` convention)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Getting started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Install dependencies**
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+   ```bash
+   npm install
+   ```
 
-## Learn More
+2. **Configure environment** — copy `.env.example` to `.env.local` and fill in your keys:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   cp .env.example .env.local
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   | Variable                            | Purpose                                |
+   | ----------------------------------- | -------------------------------------- |
+   | `API_KEY`                           | TMDB v3 API key                        |
+   | `MONGODB_URI`                       | MongoDB connection string              |
+   | `MONGODB_DB_NAME`                   | Database name (defaults to `moviehub`) |
+   | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key                  |
+   | `CLERK_SECRET_KEY`                  | Clerk secret key                       |
+   | `CLERK_WEBHOOK_SIGNING_SECRET`      | Signing secret for the Clerk webhook   |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+3. **Run the dev server**
 
-## Deploy on Vercel
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   Open [http://localhost:3000](http://localhost:3000).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## 🔗 Clerk webhook
+
+`/api/webhooks` keeps MongoDB in sync with Clerk (`user.created` / `user.updated` / `user.deleted`).
+Point a Clerk webhook at `<your-domain>/api/webhooks` and set `CLERK_WEBHOOK_SIGNING_SECRET`.
+
+## 📦 Scripts
+
+```bash
+npm run dev     # start dev server
+npm run build   # production build
+npm run start   # serve production build
+npm run lint    # eslint (flat config)
+```
+
+> This product uses the TMDB API but is not endorsed or certified by TMDB.

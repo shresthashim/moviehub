@@ -1,38 +1,65 @@
-import Results from "@/components/Results";
+import Hero from "@/components/movie/Hero";
+import MovieRow from "@/components/movie/MovieRow";
+import GenreChips from "@/components/movie/GenreChips";
+import SectionHeader from "@/components/ui/SectionHeader";
+import { getTrending, getMovies, getMovieDetails, getGenres, getBestTrailer, type Category, type MovieListItem } from "@/lib/tmdb";
+import { HOME_SECTIONS } from "@/lib/constants";
 
-const API_KEY = process.env.API_KEY;
+export default async function Home() {
+  const [trending, popular, topRated, nowPlaying, upcoming, genres] = await Promise.all([
+    getTrending("week"),
+    getMovies("popular"),
+    getMovies("top_rated"),
+    getMovies("now_playing"),
+    getMovies("upcoming"),
+    getGenres(),
+  ]);
 
-interface HomeProps {
-  searchParams: { genre?: string };
-}
+  const featured = trending[0];
+  // One extra request enriches the hero with genres + a playable trailer.
+  const featuredDetails = featured ? await getMovieDetails(String(featured.id)) : null;
+  const trailer = featuredDetails ? getBestTrailer(featuredDetails.videos) : undefined;
 
-export default async function Home({ searchParams }: HomeProps) {
-  const genre = searchParams.genre || "fetchTrending";
-
-  const endpoint =
-    genre === "fetchTopRated"
-      ? "movie/top_rated"
-      : genre === "fetchPopular"
-      ? "movie/popular"
-      : genre === "fetchNowPlaying"
-      ? "movie/now_playing"
-      : "trending/all/week";
-
-  const res = await fetch(`https://api.themoviedb.org/3/${endpoint}?api_key=${API_KEY}&language=en-US&page=1`, {
-    next: { revalidate: 9000 },
-  });
-
-  if (!res.ok) {
-    throw new Error("Something went wrong");
-  }
-
-  const data = await res.json();
-
-  const results = data.results;
+  const rowsByCategory: Record<Category, MovieListItem[]> = {
+    popular,
+    top_rated: topRated,
+    now_playing: nowPlaying,
+    upcoming,
+  };
 
   return (
     <div>
-      <Results results={results} />
+      {featured && (
+        <Hero
+          movie={featured}
+          genres={featuredDetails?.genres ?? []}
+          trailerKey={trailer?.key}
+          eyebrow="Featured · Trending"
+        />
+      )}
+
+      <div className="mx-auto max-w-7xl space-y-12 px-4 py-12 sm:px-6">
+        <MovieRow
+          title="Trending This Week"
+          subtitle="What everyone's watching right now"
+          href="/discover?sort_by=popularity.desc"
+          movies={trending}
+        />
+
+        {HOME_SECTIONS.map((section) => (
+          <MovieRow
+            key={section.category}
+            title={section.label}
+            href={section.href}
+            movies={rowsByCategory[section.category]}
+          />
+        ))}
+
+        <section>
+          <SectionHeader title="Browse by Genre" subtitle="Jump straight into a mood" />
+          <GenreChips genres={genres} />
+        </section>
+      </div>
     </div>
   );
 }

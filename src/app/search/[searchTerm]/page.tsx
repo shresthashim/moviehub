@@ -1,33 +1,50 @@
-import React from "react";
-import Results from "@/components/Results";
+import type { Metadata } from "next";
+import { FiSearch } from "react-icons/fi";
+import { searchMovies } from "@/lib/tmdb";
+import MovieGrid from "@/components/movie/MovieGrid";
+import Pagination from "@/components/ui/Pagination";
+import EmptyState from "@/components/ui/EmptyState";
 
 interface SearchPageProps {
-  params: {
-    searchTerm: string;
-  };
+  params: Promise<{ searchTerm: string }>;
+  searchParams: Promise<{ page?: string }>;
 }
 
-const SearchPage = async ({ params }: SearchPageProps) => {
-  const searchTerm = params.searchTerm;
+export async function generateMetadata({ params }: SearchPageProps): Promise<Metadata> {
+  const { searchTerm } = await params;
+  return { title: `Search · ${decodeURIComponent(searchTerm)}` };
+}
 
-  const res = await fetch(
-    `https://api.themoviedb.org/3/search/movie?api_key=${process.env.API_KEY}&query=${searchTerm}&language=en-US&include_adult=false`
-  );
+export default async function SearchPage({ params, searchParams }: SearchPageProps) {
+  const { searchTerm } = await params;
+  const { page: pageParam } = await searchParams;
+  const term = decodeURIComponent(searchTerm);
+  const page = Math.max(1, Number(pageParam) || 1);
 
-  if (!res.ok) {
-    throw new Error("Something went wrong");
-  }
-
-  const data = await res.json();
-  const results = data.results;
+  const data = await searchMovies(term, page);
+  const totalPages = Math.min(data.total_pages, 500);
 
   return (
-    <div>
-      {results && results.length === 0 && <h1 className='text-2xl text-center pt-6'>No results found</h1>}
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+      <p className="text-sm uppercase tracking-widest text-accent">Search results</p>
+      <h1 className="mt-1 font-display text-4xl tracking-wide text-foreground sm:text-5xl">&ldquo;{term}&rdquo;</h1>
+      <p className="mt-2 text-sm text-muted">
+        {data.total_results > 0 ? `${data.total_results.toLocaleString()} title${data.total_results > 1 ? "s" : ""} found` : "No matches"}
+      </p>
 
-      {results && <Results results={results} />}
+      <div className="mt-8">
+        {data.results.length > 0 ? (
+          <MovieGrid movies={data.results} />
+        ) : (
+          <EmptyState
+            icon={<FiSearch />}
+            title={`No results for "${term}"`}
+            description="Check the spelling or try searching for a different title."
+          />
+        )}
+      </div>
+
+      <Pagination page={page} totalPages={totalPages} />
     </div>
   );
-};
-
-export default SearchPage;
+}
