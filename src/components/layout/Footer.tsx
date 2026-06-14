@@ -1,12 +1,13 @@
 import Link from "next/link";
+import Logo from "@/components/layout/Logo";
 
 export default function Footer() {
   return (
     <footer className="mt-8 border-t border-border/60">
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div>
-          <Link href="/" className="font-display text-2xl tracking-wide text-foreground">
-            Movie<span className="text-accent">Hub</span>
+          <Link href="/" className="inline-block transition-opacity hover:opacity-90" aria-label="MovieHub home">
+            <Logo />
           </Link>
           <p className="mt-1 max-w-sm text-sm text-muted">
             A cinematic movie-discovery platform. Browse, search and save the films you love.

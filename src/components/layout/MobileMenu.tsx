@@ -9,6 +9,7 @@ import { AiFillHome, AiFillStar } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import SearchBox from "@/components/layout/SearchBox";
+import Logo from "@/components/layout/Logo";
 
 const LINKS = [
   { title: "Home", href: "/", Icon: AiFillHome },
@@ -47,8 +48,8 @@ export default function MobileMenu() {
         >
           {/* Drawer header */}
           <div className="flex items-center justify-between border-b border-border/60 px-5 py-4">
-            <Dialog.Title className="font-display text-2xl tracking-wide text-foreground">
-              Movie<span className="text-accent">Hub</span>
+            <Dialog.Title asChild>
+              <Logo />
             </Dialog.Title>
             <Dialog.Close asChild>
               <button

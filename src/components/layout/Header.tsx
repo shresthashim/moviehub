@@ -5,23 +5,19 @@ import MainNav from "@/components/layout/MainNav";
 import SearchBox from "@/components/layout/SearchBox";
 import ThemeToggle from "@/components/layout/ThemeToggle";
 import MobileMenu from "@/components/layout/MobileMenu";
+import Logo from "@/components/layout/Logo";
 
 export default function Header() {
   return (
     <header className="glass sticky top-0 z-50 border-b border-border/60">
-      <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6">
-        <Link href="/" className="flex shrink-0 items-center gap-2" aria-label="MovieHub home">
-          <span className="grid size-9 place-items-center rounded-lg bg-accent font-display text-xl leading-none text-accent-foreground shadow-glow">
-            M
-          </span>
-          <span className="font-display text-2xl tracking-wide text-foreground">
-            Movie<span className="text-accent">Hub</span>
-          </span>
+      <div className="mx-auto grid max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:px-6">
+        <Link href="/" className="shrink-0 transition-opacity hover:opacity-90" aria-label="MovieHub home">
+          <Logo />
         </Link>
 
-        <MainNav className="hidden items-center gap-1 md:flex" />
+        <MainNav className="hidden items-center justify-self-center gap-1 md:flex" />
 
-        <div className="ml-auto flex items-center gap-2 sm:gap-3">
+        <div className="col-start-3 flex items-center gap-2 sm:gap-3">
           <SearchBox className="hidden w-52 md:block lg:w-72" />
           <ThemeToggle />
 
