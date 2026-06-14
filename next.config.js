@@ -5,13 +5,12 @@ const nextConfig = {
     root: __dirname,
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "image.tmdb.org",
-        pathname: "/t/p/**",
-      },
-    ],
+    // Serve images straight from TMDB's CDN via a custom loader instead of
+    // Vercel's Image Optimization, so we don't burn the free-tier transformation
+    // quota (one transformation per unique image/width/quality). See
+    // src/lib/tmdb/imageLoader.ts.
+    loader: "custom",
+    loaderFile: "./src/lib/tmdb/imageLoader.ts",
   },
 };
 

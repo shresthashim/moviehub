@@ -174,7 +174,7 @@ export default async function MoviePage({ params }: MoviePageProps) {
         </div>
 
         {/* Stat grid */}
-        <dl className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-4">
+        <dl className="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-4">
           <Stat icon={<FiCalendar />} label="Release" value={formatDate(movie.release_date)} />
           <Stat icon={<FiClock />} label="Runtime" value={runtime ?? "N/A"} />
           <Stat icon={<FiDollarSign />} label="Revenue" value={formatCurrency(movie.revenue) ?? "N/A"} />
