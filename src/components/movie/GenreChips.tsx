@@ -12,6 +12,7 @@ export default function GenreChips({ genres, asLinks = true }: { genres: Genre[]
           <Link
             key={g.id}
             href={`/discover?with_genres=${g.id}`}
+            prefetch={false}
             className={cn(
               "rounded-full border border-border bg-surface/60 px-3.5 py-1.5 text-sm text-muted transition-colors",
               "hover:border-accent/50 hover:text-accent"

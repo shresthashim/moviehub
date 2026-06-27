@@ -5,6 +5,8 @@ import SectionHeader from "@/components/ui/SectionHeader";
 import { getTrending, getMovies, getMovieDetails, getGenres, getBestTrailer, type Category, type MovieListItem } from "@/lib/tmdb";
 import { HOME_SECTIONS } from "@/lib/constants";
 
+export const revalidate = 3600;
+
 export default async function Home() {
   const [trending, popular, topRated, nowPlaying, upcoming, genres] = await Promise.all([
     getTrending("week"),

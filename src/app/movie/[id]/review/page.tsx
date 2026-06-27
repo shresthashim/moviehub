@@ -5,6 +5,7 @@ import { formatDate } from "@/lib/utils";
 import EmptyState from "@/components/ui/EmptyState";
 
 export const metadata = { title: "Reviews" };
+export const revalidate = 1800;
 
 interface ReviewPageProps {
   params: Promise<{ id: string }>;

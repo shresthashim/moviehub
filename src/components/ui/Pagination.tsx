@@ -27,7 +27,11 @@ export default function Pagination({
   return (
     <nav className="mt-12 flex items-center justify-center gap-4" aria-label="Pagination">
       {page > 1 ? (
-        <Link href={href(page - 1)} className={cn(base, "text-foreground hover:border-accent/60 hover:text-accent")}>
+        <Link
+          href={href(page - 1)}
+          prefetch={false}
+          className={cn(base, "text-foreground hover:border-accent/60 hover:text-accent")}
+        >
           <FiChevronLeft className="size-4" />
           Previous
         </Link>
@@ -43,7 +47,11 @@ export default function Pagination({
       </span>
 
       {page < totalPages ? (
-        <Link href={href(page + 1)} className={cn(base, "text-foreground hover:border-accent/60 hover:text-accent")}>
+        <Link
+          href={href(page + 1)}
+          prefetch={false}
+          className={cn(base, "text-foreground hover:border-accent/60 hover:text-accent")}
+        >
           Next
           <FiChevronRight className="size-4" />
         </Link>

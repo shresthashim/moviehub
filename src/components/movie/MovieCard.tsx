@@ -11,7 +11,7 @@ export default function MovieCard({ movie, priority = false }: { movie: MovieLis
   const image = tmdbImage(movie.poster_path ?? movie.backdrop_path, "poster");
 
   return (
-    <Link href={`/movie/${movie.id}`} className="group block focus:outline-none">
+    <Link href={`/movie/${movie.id}`} prefetch={false} className="group block focus:outline-none">
       <article className="relative aspect-[2/3] overflow-hidden rounded-xl border border-border bg-surface-2 shadow-card transition-all duration-300 ease-out-expo group-hover:-translate-y-1.5 group-hover:border-accent/50 group-hover:shadow-card-hover group-focus-visible:ring-2 group-focus-visible:ring-accent">
         {image ? (
           <Image

@@ -5,6 +5,8 @@ import MovieGrid from "@/components/movie/MovieGrid";
 import Pagination from "@/components/ui/Pagination";
 import EmptyState from "@/components/ui/EmptyState";
 
+export const revalidate = 3600;
+
 interface SearchPageProps {
   params: Promise<{ searchTerm: string }>;
   searchParams: Promise<{ page?: string }>;

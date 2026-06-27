@@ -48,7 +48,7 @@ export async function getMovieDetails(id: string): Promise<MovieDetails | null> 
 }
 
 export async function searchMovies(query: string, page = 1): Promise<Paginated<MovieListItem>> {
-  return tmdbFetch<Paginated<MovieListItem>>("search/movie", { query, include_adult: false, page }, 0);
+  return tmdbFetch<Paginated<MovieListItem>>("search/movie", { query, include_adult: false, page }, 3600);
 }
 
 export async function getGenres(): Promise<Genre[]> {

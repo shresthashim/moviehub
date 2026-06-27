@@ -23,6 +23,8 @@ import TrailerModal from "@/components/movie/TrailerModal";
 import FavoriteButton from "@/components/movie/FavoriteButton";
 import SectionHeader from "@/components/ui/SectionHeader";
 
+export const revalidate = 9000;
+
 type MoviePageProps = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: MoviePageProps): Promise<Metadata> {

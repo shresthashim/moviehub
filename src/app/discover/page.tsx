@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Discover",
   description: "Filter and sort thousands of films by genre, rating, year and popularity.",
 };
+export const revalidate = 3600;
 
 type DiscoverPageProps = {
   searchParams: Promise<{ with_genres?: string; sort_by?: string; year?: string; page?: string }>;
